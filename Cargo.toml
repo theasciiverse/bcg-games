@@ -1,0 +1,57 @@
+[package]
+name = "bcg-games"
+version = "0.5.0"
+edition = "2021"
+license = "MIT"
+autobins = false
+description = "bcg-games: eight games after David H. Ahl's BASIC Computer Games, rebuilt for the terminal. Rust + Ratatui"
+
+[lib]
+name = "bcg"
+path = "src/lib.rs"
+
+[[bin]]
+name = "hammurabi"
+path = "src/bin/hammurabi.rs"
+
+[[bin]]
+name = "lunar-descent"
+path = "src/bin/lunar-descent.rs"
+
+[[bin]]
+name = "animal"
+path = "src/bin/animal.rs"
+
+[[bin]]
+name = "hexapawn"
+path = "src/bin/hexapawn.rs"
+
+[[bin]]
+name = "bagels"
+path = "src/bin/bagels.rs"
+
+[[bin]]
+name = "orbit"
+path = "src/bin/orbit.rs"
+
+[[bin]]
+name = "splat"
+path = "src/bin/splat.rs"
+
+[[bin]]
+name = "civil-war"
+path = "src/bin/civil-war.rs"
+
+[dependencies]
+ratatui = "0.30"
+log = "0.4"
+env_logger = "0.11"
+rodio = { version = "0.22", default-features = false, features = ["playback"] }
+gilrs = { version = "0.11", optional = true, default-features = false, features = ["xinput"] }
+
+[features]
+default = ["gamepad"]
+gamepad = ["dep:gilrs"]
+
+[profile.release]
+debug = 1
