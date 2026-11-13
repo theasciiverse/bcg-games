@@ -18,8 +18,9 @@ was kept.
   physics, and none of the note's structure was used.
 - Wikipedia's articles on *Hamurabi* and the lunar lander genre, for the
   history and the credits.
-- Today's planetary gravity figures (Splat) and standard histories of the
-  Civil War battles (men engaged and casualties, rounded).
+- Today's planetary gravity figures (Splat), and for Civil War each
+  battle's Wikipedia article (men engaged, casualties, result), listed
+  with their figures in asciiverse/specs/civil-war.md.
 
 ## Sources that were not read
 

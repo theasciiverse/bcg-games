@@ -1,5 +1,7 @@
 # Roadmap
 
+- **0.5.1** (2026-11-13): Civil War's battle figures checked against each
+  battle's Wikipedia article and corrected, with sources in its spec.
 - **0.5.0** (2026-11-13): all eight games playable, with demos, sound,
   mouse, saves, tests.
 - **0.6.0:** David plays each through; tune Hammurabi's rats and
