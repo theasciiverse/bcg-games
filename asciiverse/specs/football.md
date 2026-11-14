@@ -2,6 +2,17 @@
 
 Written 2026-11-14 from the idea of the book's game, without its listing or black-box play.
 
+## The original
+
+John G. Kemeny wrote *FTBALL* at Dartmouth in 1965, the Sunday after
+Dartmouth's upset win over Princeton, and *BASIC Computer Games* (1978)
+printed it; the player calls numbered plays and the results are left
+largely to chance. The 1973 edition had other football games instead.
+
+Sources: en.wikipedia.org/wiki/Dartmouth_BASIC;
+obsessivegamingchronology.blogspot.com/2025/06/dartmouth-championship-football-ftball.html
+(both read 2026-11-14).
+
 ## Our design
 
 - You coach Northfield against the computer's Granite Falls in American

@@ -2,6 +2,21 @@
 
 Written 2026-11-14 from the idea of the book's game, without its listing or black-box play.
 
+## The original
+
+James A. Storer wrote it as the *Pollution Game* around 1970, as a
+student at Lexington High School, Massachusetts, after *Hamurabi*; it was
+offered through DECUS and printed as *King* in *101 BASIC Computer
+Games*. The player governs an island for eight years, deciding how much
+land to sell to foreign industry, how much to give the people, what to
+plant and what to spend on pollution control. Storer also wrote the 1969
+lunar landing game and later taught computer science at Brandeis.
+Our island, Pellora, its currency and its numbers are our own.
+
+Sources: cs.brandeis.edu/~storer/LunarLander/LunarLander.html;
+kn86-docs-gca3d.kinsta.page/influences/inspiration/pollution-game/
+(both read 2026-11-14).
+
 ## Our design
 
 You are premier of Pellora, a small island nation of our own invention,

@@ -2,6 +2,16 @@
 
 Written 2026-11-14 from the idea of the book's game, without its listing or black-box play.
 
+## The original
+
+Bill Palmby, a student at Adlai E. Stevenson High School in Prairie View,
+Illinois, wrote *Acey Ducey*, printed in *101 BASIC Computer Games* (DEC,
+1973) and *BASIC Computer Games* (1978): two cards are dealt face up and
+the player bets on whether the third falls between them. The card game
+itself is known as In-Between, or Acey Deucey.
+
+Source: obsessivegamingchronology.blogspot.com/2025/11 (read 2026-11-14).
+
 ## Our design
 
 - One 52-card deck, shuffled; it is shuffled anew when it runs low.

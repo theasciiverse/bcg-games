@@ -2,6 +2,22 @@
 
 Written 2026-11-14 from the idea of the book's game, without its listing or black-box play.
 
+## The original
+
+David Sweet wrote the bullfight game at Dartmouth; Walter J. Koetke's
+students at Lexington High School, Massachusetts, converted it to BASIC,
+and it appeared as *Bull* in *101 BASIC Computer Games* (DEC, 1973) and,
+modified by Steve North, as *Bullfight* in *BASIC Computer Games* (1978).
+The quality of the bull and of the matador's helpers is drawn by chance,
+then the player chooses passes and when to finish, and the crowd rewards
+courage. Ours is bloodless instead, as in Portugal, where a law of 1928
+forbids killing the bull in the ring, and in the festival bullfights of
+California's Portuguese communities.
+
+Sources: obsessivegamingchronology.blogspot.com/2026/01/033-bull-textual-tauromachy.html;
+en.wikipedia.org/wiki/Portuguese-style_bullfighting;
+en.wikipedia.org/wiki/Bullfighting (all read 2026-11-14).
+
 ## Our design
 
 A bloodless bullfight, after the Portuguese corrida and the bloodless

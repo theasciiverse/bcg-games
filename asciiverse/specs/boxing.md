@@ -2,6 +2,17 @@
 
 Written 2026-11-14 from the idea of the book's game, without its listing or black-box play.
 
+## The original
+
+A three-round Olympic boxing match in *101 BASIC Computer Games* (DEC,
+1973) and *BASIC Computer Games* (1978): each boxer has a best punch and
+a weak spot, and the player chooses punches. Its author's name reached us
+only from a single search snippet and is left out until it can be
+checked.
+
+Source: the 1973 book's table of contents as quoted in search results
+(2026-11-14).
+
 ## Our design
 
 - An amateur bout of three rounds against a computer boxer (one of five

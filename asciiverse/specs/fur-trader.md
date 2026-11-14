@@ -2,6 +2,26 @@
 
 Written 2026-11-14 from the idea of the book's game, without its listing or black-box play.
 
+## The original
+
+Dan G. Bachor of the Department of Psychology at the University of
+Calgary wrote *Fur Trader*, printed in *101 BASIC Computer Games* (DEC,
+1973) and *BASIC Computer Games* (1978): a fur-trading expedition based
+around Lake Ontario, dividing the year's furs and choosing a fort to sell
+them at, each with its own prices and risks.
+
+Our posts are real places of the time: Fort Frontenac, built in 1673 by
+Governor Frontenac where Lake Ontario empties into the St. Lawrence
+(today's Kingston), to hold the Great Lakes fur trade; Montreal, the
+trade's centre; and Albany on the Hudson, the Dutch Fort Orange, English
+since 1664. Beaver was the key pelt, for hat felt; voyageurs were the
+licensed canoe men who carried the trade from Montreal.
+
+Sources: obsessivegamingchronology.blogspot.com/2026/03/fur-trader.html;
+en.wikipedia.org/wiki/Fort_Frontenac; en.wikipedia.org/wiki/Fort_Orange_(New_Netherland);
+en.wikipedia.org/wiki/North_American_fur_trade; en.wikipedia.org/wiki/Voyageurs
+(all read 2026-11-14).
+
 ## Our design
 
 You are an independent fur trader on the north shore of Lake Ontario in

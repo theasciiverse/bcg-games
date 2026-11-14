@@ -2,6 +2,17 @@
 
 Written 2026-11-14 from the idea of the book's game, without its listing or black-box play.
 
+## The original
+
+Charles Bacheller wrote the basketball game at Dartmouth College in May
+1967 and revised it in April 1968; it went out through DECUS for the
+PDP-10 and was printed in *101 BASIC Computer Games* (DEC, 1973) and
+*BASIC Computer Games* (1978). The player coaches Dartmouth, calling a
+numbered shot on offence and a defence when the other side has the ball.
+
+Source: obsessivegamingchronology.blogspot.com/2024/07/prehistory-viii-more-basic-sports.html
+(read 2026-11-14).
+
 ## Our design
 
 - You coach Lakeside against the computer's Cedar State: two halves of

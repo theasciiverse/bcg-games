@@ -2,6 +2,14 @@
 
 Written 2026-11-14 from the idea of the book's game, without its listing or black-box play.
 
+## The original
+
+A golf game in which the player chooses a club and how hard to swing was
+printed in *101 BASIC Computer Games* (DEC, 1973) and *BASIC Computer
+Games* (1978). Its author could not be verified and is not named.
+
+Source: atariarchive.org/?p=1600 (read 2026-11-14 via a summary).
+
 ## Our design
 
 - Nine holes of our own, par 36: Gentle Start (4), Mill Pond (3), Long
