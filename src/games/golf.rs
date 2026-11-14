@@ -1055,7 +1055,7 @@ new round, Tab shows the rules, M sound, Esc quits.";
             "hole {} of 9   {}",
             (self.hole + 1).min(9),
             if self.card.is_empty() {
-                "level".to_string()
+                "level par".to_string()
             } else {
                 over_under(total as i32 - played_par as i32)
             }
