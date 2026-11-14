@@ -386,7 +386,7 @@ impl Boxing {
                         " Right on your weak spot."
                     });
                 } else {
-                    text.push_str(" Right where it hurts.");
+                    text.push_str(" Right on the weak spot.");
                 }
                 self.b[s].knows_weak = Some(acts[s]);
             }

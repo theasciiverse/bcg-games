@@ -50,7 +50,7 @@ pub const POSTS: [Post; 3] = [
     Post {
         name: "Fort Frontenac",
         route: "along the lake to its eastern end",
-        about: "The French fort where the lake empties into the St. Lawrence. Close and safe, but the King's storekeeper pays the least.",
+        about: "The French fort where the lake empties into the St. Lawrence. Close and safe, but it pays the least.",
         pays: 0.85,
         goods: 55,
         path: &[CAMP, (0.38, 0.24), FRONTENAC],
@@ -75,7 +75,7 @@ pub const POSTS: [Post; 3] = [
 
 const PARTNERS: [&str; 4] = [
     "Anishinaabe families at their winter camps",
-    "Wendat traders at their village",
+    "Wendat traders from the country around Detroit",
     "Haudenosaunee hunters coming in from the hills",
     "Odawa traders who came down by canoe",
 ];
