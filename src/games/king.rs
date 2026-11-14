@@ -16,7 +16,10 @@ impl Game for King {
     const HELP: &'static str = "Not written yet.";
 
     fn new(ctx: Ctx) -> Self {
-        King { _ctx: ctx, quit: false }
+        King {
+            _ctx: ctx,
+            quit: false,
+        }
     }
 
     fn draw(&mut self, area: Rect, buf: &mut Buffer) {

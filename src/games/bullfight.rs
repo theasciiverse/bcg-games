@@ -16,7 +16,10 @@ impl Game for Bullfight {
     const HELP: &'static str = "Not written yet.";
 
     fn new(ctx: Ctx) -> Self {
-        Bullfight { _ctx: ctx, quit: false }
+        Bullfight {
+            _ctx: ctx,
+            quit: false,
+        }
     }
 
     fn draw(&mut self, area: Rect, buf: &mut Buffer) {

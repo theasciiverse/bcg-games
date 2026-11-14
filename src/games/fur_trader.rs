@@ -16,7 +16,10 @@ impl Game for FurTrader {
     const HELP: &'static str = "Not written yet.";
 
     fn new(ctx: Ctx) -> Self {
-        FurTrader { _ctx: ctx, quit: false }
+        FurTrader {
+            _ctx: ctx,
+            quit: false,
+        }
     }
 
     fn draw(&mut self, area: Rect, buf: &mut Buffer) {

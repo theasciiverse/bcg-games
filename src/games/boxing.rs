@@ -16,7 +16,10 @@ impl Game for Boxing {
     const HELP: &'static str = "Not written yet.";
 
     fn new(ctx: Ctx) -> Self {
-        Boxing { _ctx: ctx, quit: false }
+        Boxing {
+            _ctx: ctx,
+            quit: false,
+        }
     }
 
     fn draw(&mut self, area: Rect, buf: &mut Buffer) {

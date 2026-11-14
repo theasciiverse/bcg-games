@@ -16,7 +16,10 @@ impl Game for AceyDucey {
     const HELP: &'static str = "Not written yet.";
 
     fn new(ctx: Ctx) -> Self {
-        AceyDucey { _ctx: ctx, quit: false }
+        AceyDucey {
+            _ctx: ctx,
+            quit: false,
+        }
     }
 
     fn draw(&mut self, area: Rect, buf: &mut Buffer) {

@@ -16,7 +16,10 @@ impl Game for Football {
     const HELP: &'static str = "Not written yet.";
 
     fn new(ctx: Ctx) -> Self {
-        Football { _ctx: ctx, quit: false }
+        Football {
+            _ctx: ctx,
+            quit: false,
+        }
     }
 
     fn draw(&mut self, area: Rect, buf: &mut Buffer) {

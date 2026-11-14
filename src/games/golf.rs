@@ -16,7 +16,10 @@ impl Game for Golf {
     const HELP: &'static str = "Not written yet.";
 
     fn new(ctx: Ctx) -> Self {
-        Golf { _ctx: ctx, quit: false }
+        Golf {
+            _ctx: ctx,
+            quit: false,
+        }
     }
 
     fn draw(&mut self, area: Rect, buf: &mut Buffer) {
