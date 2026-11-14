@@ -42,6 +42,46 @@ path = "src/bin/splat.rs"
 name = "civil-war"
 path = "src/bin/civil-war.rs"
 
+[[bin]]
+name = "acey-ducey"
+path = "src/bin/acey-ducey.rs"
+
+[[bin]]
+name = "basketball"
+path = "src/bin/basketball.rs"
+
+[[bin]]
+name = "boxing"
+path = "src/bin/boxing.rs"
+
+[[bin]]
+name = "bullfight"
+path = "src/bin/bullfight.rs"
+
+[[bin]]
+name = "football"
+path = "src/bin/football.rs"
+
+[[bin]]
+name = "golf"
+path = "src/bin/golf.rs"
+
+[[bin]]
+name = "fur-trader"
+path = "src/bin/fur-trader.rs"
+
+[[bin]]
+name = "king"
+path = "src/bin/king.rs"
+
+[[bin]]
+name = "3d-tic-tac-toe"
+path = "src/bin/3d-tic-tac-toe.rs"
+
+[[bin]]
+name = "hide-and-seek"
+path = "src/bin/hide-and-seek.rs"
+
 [dependencies]
 ratatui = "0.30"
 log = "0.4"

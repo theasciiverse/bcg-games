@@ -7,6 +7,10 @@ use std::collections::BTreeMap;
 use std::path::PathBuf;
 
 pub fn dir(id: &str) -> Option<PathBuf> {
+    // tests never read or write a player's real state folder
+    if cfg!(test) {
+        return None;
+    }
     let env = |k: &str| {
         std::env::var_os(k)
             .filter(|v| !v.is_empty())
