@@ -1,5 +1,5 @@
 # Asciiverse release workflow (tag v* or run by hand with a tag)
-# Builds the eight bcg-games programs and packs one archive per game per
+# Builds the bcg-games programs and packs one archive per game per
 # target, named <id>-<target>.tar.gz (Linux, macOS) or .zip (Windows), plus
 # a SHA256SUMS file, attached to one GitHub release; each game is its own
 # catalog title reading its own archives (hub/catalog/SCHEMA.md).
@@ -22,7 +22,10 @@ on:
         required: true
 
 env:
-  IDS: hammurabi lunar-descent animal hexapawn bagels orbit splat civil-war
+  IDS: >-
+    hammurabi lunar-descent animal hexapawn bagels orbit splat civil-war
+    basketball football boxing bullfight golf acey-ducey king fur-trader
+    3d-tic-tac-toe hide-and-seek
   TAG: ${{ inputs.tag || github.ref_name }}
 
 permissions:
@@ -157,5 +160,5 @@ jobs:
         run: |
           gh release view "$TAG" -R "$GITHUB_REPOSITORY" >/dev/null 2>&1 \
             || gh release create "$TAG" -R "$GITHUB_REPOSITORY" --title "bcg-games $TAG" \
-                 --notes "Eight games after David H. Ahl's BASIC Computer Games (1978), rebuilt for the terminal from their rules: Hammurabi, Lunar Descent, Animal, Hexapawn, Bagels, Orbit, Splat and Civil War. One archive per game per platform; see the README and CLEANROOM.md."
+                 --notes "Eighteen games after David H. Ahl's BASIC Computer Games (1978), rebuilt for the terminal from their rules. New in this release: Basketball, Football, Boxing, Bullfight, Golf, Acey Ducey, King, Fur Trader, 3-D Tic-Tac-Toe, and Hide and Seek (Hurkle, Mugwump, Depth Charge). Also in it: Hammurabi, Lunar Descent, Animal, Hexapawn, Bagels, Orbit, Splat and Civil War. One archive per game per platform; see the README and CLEANROOM.md."
           gh release upload "$TAG" dist/* -R "$GITHUB_REPOSITORY" --clobber

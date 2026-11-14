@@ -1,13 +1,17 @@
 # Roadmap
 
+- **0.6.0** (2026-11-14): the second release, ten more games:
+  Basketball, Football, Boxing, Bullfight, Golf, Acey Ducey, King, Fur
+  Trader, 3-D Tic-Tac-Toe, and Hide and Seek (Hurkle, Mugwump, Depth
+  Charge).
 - **0.5.1** (2026-11-13): Civil War's battle figures checked against each
   battle's Wikipedia article and corrected, with sources in its spec.
-- **0.5.0** (2026-11-13): all eight games playable, with demos, sound,
-  mouse, saves, tests.
-- **0.6.0:** David plays each through; tune Hammurabi's rats and
+- **0.5.0** (2026-11-13): the first eight games playable, with demos,
+  sound, mouse, saves, tests.
+- **0.7.0:** David plays each through; tune Hammurabi's rats and
   newcomers, Civil War's matchup table and morale, Lunar Descent's live
-  speed, Splat's ranking words.
-- **0.7.0:** a two-general Civil War from the start screen (today only
+  speed, Splat's ranking words, and the sports games' odds.
+- **0.8.0:** a two-general Civil War from the start screen (today only
   `--two`); Animal starter packs (birds, fish, dinosaurs); Orbit and
   Splat records by world and difficulty.
 - **1.0.0:** played on Linux, macOS, Windows and the Steam Deck pad.

@@ -4,7 +4,7 @@ version = "0.5.1"
 edition = "2021"
 license = "MIT"
 autobins = false
-description = "bcg-games: eight games after David H. Ahl's BASIC Computer Games, rebuilt for the terminal. Rust + Ratatui"
+description = "bcg-games: games after David H. Ahl's BASIC Computer Games, rebuilt for the terminal. Rust + Ratatui"
 
 [lib]
 name = "bcg"

@@ -1,5 +1,5 @@
 //! Sound, all made here from square, triangle and noise waves: no sound
-//! files. One palette for the whole collection, so the eight games sound
+//! files. One palette for the whole collection, so the games sound
 //! like one family.
 
 use rodio::buffer::SamplesBuffer;
