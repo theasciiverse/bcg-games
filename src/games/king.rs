@@ -15,6 +15,8 @@ use ratatui::style::Color;
 pub const YEARS: u32 = 8;
 /// crowns a citizen needs for a year's food
 pub const FOOD: i64 = 80;
+/// crowns that keep one industrial hectare clean for a year
+pub const CLEAN: i64 = 20;
 /// hectares one citizen can farm
 pub const HA_PER_FARMER: i64 = 2;
 pub const ISLAND: &str = "Pellora";
@@ -133,6 +135,15 @@ impl Nation {
         self.treasury + o.sell * self.price - o.food - o.plant * self.plant_cost - o.control
     }
 
+    /// A middling guess at the year's income from these orders: an average
+    /// harvest and tourist season, levies and the workers' tax.
+    pub fn income_guess(&self, o: &Orders) -> i64 {
+        let (_, from_forest) = self.split_sale(o.sell.max(0));
+        let industry = self.industry + o.sell.max(0);
+        let workers = self.workers + o.sell.max(0) / 2;
+        o.plant * 25 + (self.forest - from_forest) * 13 + industry * 15 + workers * 40
+    }
+
     pub fn check(&self, o: &Orders) -> Option<String> {
         if o.sell < 0 || o.food < 0 || o.plant < 0 || o.control < 0 {
             return Some("Orders can't be negative.".into());
@@ -161,9 +172,9 @@ impl Nation {
     }
 
     /// How fouled the island is, 0 clean to 0.8 at worst, after the
-    /// money spent on control (10 crowns clears one hectare's worth).
+    /// money spent on control (CLEAN crowns clear one hectare's worth).
     pub fn pollution(industry: i64, control: i64) -> f32 {
-        let units = (industry - control / 10).max(0) as f32;
+        let units = (industry - control / CLEAN).max(0) as f32;
         (units / 1000.0).min(0.8)
     }
 
@@ -233,8 +244,8 @@ impl Nation {
 
     /// Out of 100: people kept, forest kept, clean air, money in hand.
     pub fn score(&self, poll: f32) -> u32 {
-        let people = (self.citizens as f32 / self.start_citizens as f32).min(1.2) / 1.2 * 50.0;
-        let forest = self.forest as f32 / 1000.0 * 20.0;
+        let people = (self.citizens as f32 / self.start_citizens as f32).min(1.2) / 1.2 * 40.0;
+        let forest = (self.forest as f32 / 1000.0).min(1.0) * 30.0;
         let clean = (1.0 - poll / 0.8) * 20.0;
         let money = (self.treasury as f32 / 30_000.0).clamp(0.0, 1.0) * 10.0;
         (people + forest + clean + money).round() as u32
@@ -250,12 +261,12 @@ impl Nation {
             control: 0,
         };
         o.plant = self.farm.min(self.citizens * HA_PER_FARMER);
-        o.control = self.industry * 7;
+        o.control = self.industry * CLEAN * 7 / 10;
         let reserve = 12_000;
         let short = reserve - self.left(&o);
         if short > 0 {
             o.sell = ((short + self.price - 1) / self.price).min(self.land());
-            o.control += o.sell * 7;
+            o.control += o.sell * CLEAN * 7 / 10;
             o.plant = o.plant.min(self.farm_after(&o));
         }
         // still short: trim the cleanup, then the planting
@@ -276,7 +287,7 @@ pub fn verdict_words(score: u32) -> (&'static str, &'static str) {
     if score >= 85 {
         (
             "Re-elected by a landslide",
-            "The island is greener, fuller and richer than you found it. Crowds line the harbour road to cheer you back into office.",
+            "The island is fuller and richer than you found it, and its hills are still green. Crowds line the harbour road to cheer you back into office.",
         )
     } else if score >= 70 {
         (
@@ -339,7 +350,7 @@ impl King {
             NumField::new("Farmland to plant (ha)", 0, 0, 99_999, 10),
             NumField::new("Crowns against pollution", 0, 0, 9_999_999, 500),
         ];
-        let control = (n.industry * 10)
+        let control = (n.industry * CLEAN)
             .min(n.treasury - self.fields[1].value())
             .max(0);
         self.fields[3].set(control);
@@ -358,7 +369,7 @@ impl King {
                 o.sell += self.ctx.rng.range(5, 15) * 10;
                 o.sell = o.sell.min(self.nation.land());
                 o.plant = o.plant.min(self.nation.farm_after(&o));
-                o.control += o.sell * 7;
+                o.control += o.sell * CLEAN * 7 / 10;
                 while self.nation.left(&o) < 0 && o.control > 0 {
                     o.control = (o.control - 500).max(0);
                 }
@@ -749,6 +760,13 @@ replaces it, Enter ends the year. F feeds everyone, P plants all you can.";
                 if self.fields[self.focus].key(&other, &mut fresh) {
                     self.fresh = fresh;
                 }
+                // selling farmland shrinks what can be planted
+                if self.focus == 0 {
+                    let farm = self.nation.farm_after(&self.orders());
+                    if self.fields[2].value() > farm {
+                        self.fields[2].set(farm);
+                    }
+                }
             }
         }
     }
@@ -883,7 +901,7 @@ replaces it, Enter ends the year. F feeds everyone, P plants all you can.";
         };
         if self.show_help {
             let p = panel(buf, report, "How Pellora works", CYAN);
-            para(buf, p, "Each citizen needs 80 crowns of food a year and can farm 2 ha. A planted hectare costs 10 to 15 crowns and brings back 18 to 32 at harvest, less in a fouled year. Forest brings tourists. Land sold to industry pays once, then the factories pay levies each year and bring foreign workers, who pay theirs too; but every factory hectare fouls the island unless 10 crowns a year clean up after it. Lose more than 8% of the citizens in a year, hoard while a tenth go hungry, or let the island fall below three fifths of its people, and your term ends early.", st(INK));
+            para(buf, p, "Each citizen needs 80 crowns of food a year and can farm 2 ha. A planted hectare costs 10 to 15 crowns and brings back 18 to 32 at harvest, less in a fouled year. Forest brings tourists. Land sold to industry pays once, then the factories pay levies each year and bring foreign workers, who pay theirs too; but every factory hectare fouls the island unless 20 crowns a year clean up after it. Lose more than 8% of the citizens in a year, hoard while a tenth go hungry, or let the island fall below three fifths of its people, and your term ends early.", st(INK));
         } else {
             let title = match n.history.last() {
                 Some(y) if y.year == 0 => "The island as you find it".to_string(),
@@ -968,8 +986,17 @@ replaces it, Enter ends the year. F feeds everyone, P plants all you can.";
                     let left = self.nation.left(&o);
                     let hungry = (self.nation.citizens - o.food / FOOD).max(0);
                     let poll = Nation::pollution(self.nation.industry + o.sell, o.control);
+                    // warn while there is still time to sell land or save
+                    let next = left + self.nation.income_guess(&o);
+                    // next year's bills if the same orders were given again
+                    let food = self.nation.citizens * FOOD + o.plant * self.nation.plant_cost;
                     if hungry > 0 {
                         (format!("{left} kept. {hungry} would go hungry!"), AMBER)
+                    } else if next < food && self.nation.year < YEARS {
+                        (
+                            format!("{left} kept; next year runs short."),
+                            AMBER,
+                        )
                     } else if poll >= 0.05 {
                         (
                             format!("{left} kept. Pollution would be {:.0}%.", poll * 100.0),
@@ -990,7 +1017,7 @@ replaces it, Enter ends the year. F feeds everyone, P plants all you can.";
                 format!("at {} a ha", self.nation.plant_cost),
                 format!(
                     "{} cleans it all",
-                    (self.nation.industry + self.fields[0].value()) * 10
+                    (self.nation.industry + self.fields[0].value()) * CLEAN
                 ),
             ];
             for (i, h) in hints.iter().enumerate() {
@@ -1040,7 +1067,7 @@ mod tests {
     fn pollution_rises_with_industry_and_falls_with_control() {
         assert_eq!(Nation::pollution(0, 0), 0.0);
         assert!(Nation::pollution(300, 0) > Nation::pollution(300, 2000));
-        assert_eq!(Nation::pollution(300, 3000), 0.0);
+        assert_eq!(Nation::pollution(300, 300 * CLEAN), 0.0);
         assert!(Nation::pollution(5000, 0) <= 0.8);
     }
 

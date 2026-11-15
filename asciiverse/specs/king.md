@@ -35,8 +35,9 @@ for an eight-year term. All money is in crowns, all land in hectares.
   2. Crowns for the people's food: 80 a citizen feeds them for the year.
   3. Farmland to plant: at most the farmland left after the sale, and at
      most 2 ha a citizen.
-  4. Crowns against pollution: every 10 crowns clears one industrial
-     hectare's worth of pollution for the year.
+  4. Crowns against pollution: every 20 crowns clears one industrial
+     hectare's worth of pollution for the year (0.7.0: 10, which made
+     clean factories pay far better than farms or forest).
   The four together may not spend more than the treasury plus the sale.
 - **Pollution** is the industrial hectares not cleaned up, divided by
   1,000, capped at 0.8.
@@ -61,10 +62,15 @@ for an eight-year term. All money is in crowns, all land in hectares.
   - the citizens fall below three fifths of the starting number: you
     resign from an emptied island.
 - **Serving the full term:** the election is scored out of 100: citizens
-  kept (50, full marks at 120% of the start), forest kept (20), clean air
+  kept (40, full marks at 120% of the start), forest kept (30), clean air
   (20, by the last year's pollution), money in hand (10, full at 30,000
   crowns). 85 or more is a landslide, 70 re-elected, 55 narrowly
-  re-elected, below that defeated at the polls.
+  re-elected, below that defeated at the polls. (0.7.0: citizens 40 and
+  forest 30, from 50 and 20, so a term that turned most of the island
+  into factories is no longer a landslide.)
+- The orders warn when the treasury, with an average year's income,
+  would not pay for the same food and planting again next year; selling
+  farmland lowers the planting order to what is left.
 - Losses are told plainly and soberly ("lost to hunger"), and the ways out
   of office are votes and resignation, nothing more.
 

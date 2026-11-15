@@ -152,7 +152,7 @@ pub const CLUBS: [Club; 10] = [
 pub const SAND_WEDGE: usize = 8;
 pub const PUTTER: usize = 9;
 pub const CUP: f32 = 0.3;
-pub const GREEN_R: f32 = 16.0;
+pub const GREEN_R: f32 = 12.0;
 pub const MAX_STROKES: u32 = 10;
 
 pub struct Hole {
@@ -393,8 +393,8 @@ pub fn strike(
 ) -> Shot {
     let c = &CLUBS[club];
     let (dist_k, spread_k) = lie.penalty(club);
-    let mut dist = c.yards * power * dist_k * (0.99 + rng.normal() * 0.045).clamp(0.8, 1.1);
-    let mut dev = rng.normal() * c.spread * 1.5 * spread_k * (0.5 + 0.5 * power);
+    let mut dist = c.yards * power * dist_k * (0.99 + rng.normal() * 0.06).clamp(0.8, 1.1);
+    let mut dev = rng.normal() * c.spread * 1.8 * spread_k * (0.5 + 0.5 * power);
     let mut curve = "";
     if club != PUTTER {
         // the harder the swing, the likelier a hook or a slice
@@ -411,7 +411,7 @@ pub fn strike(
             dist *= 0.92;
         }
     } else {
-        dev = rng.normal() * (3.5 + c.spread * power);
+        dev = rng.normal() * (4.5 + c.spread * power);
         dist = c.yards * power * (1.0 + rng.normal() * 0.07);
     }
     let heading = aim + dev.to_radians();
@@ -610,7 +610,8 @@ impl Golf {
                 };
                 if seg_dist(pin, w[0], w[1]) <= catch {
                     let past = end.dist(pin);
-                    if past < 1.5 {
+                    // only a ball dying at the hole drops, not one racing past
+                    if past < 0.7 {
                         holed = true;
                     }
                     break;
@@ -729,7 +730,7 @@ impl Golf {
             "Round over: {total}, {}.{}",
             over_under(diff),
             if new_best && !self.ctx.demo {
-                " Your best round yet!"
+                " Best yet!"
             } else {
                 ""
             }

@@ -17,16 +17,16 @@ Source: atariarchive.org/?p=1600 (read 2026-11-14 via a summary).
   Dogleg Right (4), The Long Way Home (5), Clubhouse (4). Each hole is a
   line of play from the tee to the pin, with a fairway along it, rough
   beside that, then a band of trees, then out of bounds; bunkers and
-  water are placed by hand. The green is a circle of 16 yards around the
-  pin.
+  water are placed by hand. The green is a circle of 12 yards around the
+  pin (0.7.0: 16).
 - Clubs and full-swing distances in yards: driver 250, 3 wood 225, 5 wood
   205, 3 iron 190, 5 iron 170, 7 iron 150, 9 iron 130, pitching wedge
   110, sand wedge 80, putter 30. Longer clubs stray more.
 - A shot is a club, an aim (any direction) and a swing from 5 to 100
-  percent. Distance is the club's times the swing, with a few percent of
-  chance either way. The direction strays by chance, more with a harder
-  swing; a hard swing can also hook or slice, 5 to 13 degrees, and lose a
-  little distance.
+  percent. Distance is the club's times the swing, with about 6 percent
+  of chance either way (0.7.0: 4.5). The direction strays by chance (a
+  fifth more than in 0.6.0), more with a harder swing; a hard swing can
+  also hook or slice, 5 to 13 degrees, and lose a little distance.
 - The lie: from the rough a club gives 82 percent of its distance and
   strays half again as much; from the trees 55 percent and much wilder;
   from a bunker the sand wedge gives 90 percent, any other club 60.
@@ -36,8 +36,10 @@ Source: atariarchive.org/?p=1600 (read 2026-11-14 via a summary).
   bounds costs a stroke and the shot is played again from the same spot.
 - On the green the putter rolls the ball; each green slopes its own way,
   bending a putt by up to 7 yards per 100 rolled. A putt drops when it
-  stops within 0.3 yards of the cup, or runs over it and stops within 1.5
-  yards beyond. A chip from off the green can drop too, less easily.
+  stops within 0.3 yards of the cup, or runs over it and stops within 0.7
+  yards beyond (0.7.0: 1.5, and putts stray a degree more; with the
+  caddie's every suggestion taken, 0.6.0 rounds came in at par or under,
+  0.7.0's at one to four over). A chip from off the green can drop too, less easily.
 - A hole is picked up after ten strokes.
 - The caddie: for every shot a club, an aim on the line of play and a
   swing are set up, which the player may change. The caddie ignores the
