@@ -223,8 +223,9 @@ pub fn too_small(buf: &mut Buffer, area: Rect, w: u16, h: u16) -> bool {
         return false;
     }
     fill(buf, area, st(INK));
-    let msg = format!("Make the window at least {w}x{h}");
-    let now = format!("(it is {}x{})", area.width, area.height);
+    // the frame takes a title row and a key row around the area
+    let msg = format!("Make the window at least {w}x{}", h + 2);
+    let now = format!("(it is {}x{})", area.width, area.height + 2);
     let y = area.y + area.height / 2;
     centre(buf, area, y.saturating_sub(1), &msg, st(AMBER));
     centre(buf, area, y, &now, st(DIM));

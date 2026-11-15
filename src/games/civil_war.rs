@@ -61,14 +61,14 @@ pub const BATTLES: &[Battle] = &[
 ];
 
 pub const ATTACKS: [&str; 4] = [
-    "Artillery bombardment",
+    "Bombardment",
     "Frontal assault",
     "Flanking march",
     "Encirclement",
 ];
 pub const DEFENCES: [&str; 4] = [
     "Artillery barrage",
-    "Dig in against assault",
+    "Dig in",
     "Guard the flanks",
     "Fall back",
 ];
@@ -138,13 +138,13 @@ pub fn matchup(attacking: bool, mine: usize, theirs: usize) -> f64 {
         [1.0, 0.85, 0.9, 0.7],   // bombardment
         [1.0, 1.45, 0.8, 0.75],  // frontal assault
         [0.85, 0.8, 1.35, 0.8],  // flanking march
-        [1.05, 1.1, 1.15, 0.65], // encirclement
+        [0.9, 0.8, 1.3, 0.7],    // encirclement
     ];
     // defender's view: against the attacks (bombard, frontal, flank, encircle)
     const DEF: [[f64; 4]; 4] = [
-        [0.95, 0.9, 1.0, 1.0],  // barrage
+        [0.9, 0.85, 0.95, 0.9], // barrage
         [1.1, 0.6, 1.25, 1.0],  // dig in against assault
-        [1.05, 1.2, 0.65, 0.9], // guard the flanks
+        [1.05, 1.2, 0.65, 0.95], // guard the flanks
         [0.6, 0.6, 0.6, 0.55],  // fall back
     ];
     if attacking {
@@ -152,6 +152,30 @@ pub fn matchup(attacking: bool, mine: usize, theirs: usize) -> f64 {
     } else {
         DEF[mine][theirs]
     }
+}
+
+/// Ammunition per man against what an even share would buy.
+fn ammo_k(s: &Supply, men: u32, infl: f64) -> f64 {
+    let real = s.ammo as f64 / (1.0 + infl / 100.0);
+    (real / (men as f64 * 1.6)).clamp(0.2, 1.6)
+}
+
+/// How a side's losses grow with the enemy's fire and shrink with its own
+/// spirit.
+fn supply_k(enemy_ammo: f64, morale: f64) -> f64 {
+    (0.6 + 0.4 * enemy_ammo) * (1.25 - 0.35 * morale)
+}
+
+/// The South's edge in battle `i` if both sides spent evenly and chose
+/// plans that cancel out.
+fn even_edge(i: usize) -> f64 {
+    let b = &BATTLES[i];
+    let (si, ni) = (inflation(true, i), inflation(false, i));
+    let s = Supply::even(budget(b.south_men));
+    let n = Supply::even(budget(b.north_men));
+    let s_fac = supply_k(ammo_k(&n, b.north_men, ni), morale(&s, b.south_men, si));
+    let n_fac = supply_k(ammo_k(&s, b.south_men, si), morale(&n, b.north_men, ni));
+    s_fac / n_fac
 }
 
 #[derive(Clone, Debug)]
@@ -180,42 +204,44 @@ pub fn fight(
     let north_attacks = b.role != Role::Attack;
     let sm = morale(south, b.south_men, inflation(true, i));
     let nm = morale(north, b.north_men, inflation(false, i));
-    // ammunition per man against what an even share would buy
-    let ammo_k = |s: &Supply, men: u32, infl: f64| {
-        let real = s.ammo as f64 / (1.0 + infl / 100.0);
-        (real / (men as f64 * 1.6)).clamp(0.2, 1.6)
-    };
     let sa = ammo_k(south, b.south_men, inflation(true, i));
     let na = ammo_k(north, b.north_men, inflation(false, i));
     // losses: history's, scaled by the matchup, the enemy's fire and our spirit
     let s_fac = matchup(south_attacks, south_choice, north_choice)
-        * (0.6 + 0.4 * na)
-        * (1.25 - 0.35 * sm)
+        * supply_k(na, sm)
         * rng.between(0.88, 1.12) as f64;
     let n_fac = matchup(north_attacks, north_choice, south_choice)
-        * (0.6 + 0.4 * sa)
-        * (1.25 - 0.35 * nm)
+        * supply_k(sa, nm)
         * rng.between(0.88, 1.12) as f64;
     let south_lost = ((b.south_lost as f64 * s_fac).round() as u32).min(b.south_men);
     let north_lost = ((b.north_lost as f64 * n_fac).round() as u32).min(b.north_men);
     let south_deserted = (b.south_men as f64 * (0.06 * (1.0 - sm)).max(0.0)).round() as u32;
     let north_deserted = (b.north_men as f64 * (0.06 * (1.0 - nm)).max(0.0)).round() as u32;
-    // the side that loses the smaller share of its army carries the field;
-    // falling back always gives it up
-    let s_share = (south_lost + south_deserted) as f64 / b.south_men as f64;
-    let n_share = (north_lost + north_deserted) as f64 / b.north_men as f64;
+    // the field goes as history's did unless one side fought clearly better
+    // than history: edge is how much lighter the South's losses ran against
+    // history's than the North's did. Falling back always gives it up.
+    let s_eff = (south_lost + south_deserted) as f64 / b.south_lost.max(1) as f64;
+    let n_eff = (north_lost + north_deserted) as f64 / b.north_lost.max(1) as f64;
+    // measured against two evenly supplied armies, so the South's inflation
+    // makes thrift harder but does not lose every battle by itself
+    let edge = n_eff / s_eff.max(1e-6) * even_edge(i);
+    let (south_at, north_below) = match b.result {
+        Outcome::South => (0.9, 0.8),
+        Outcome::North => (1.25, 1.1),
+        Outcome::Drawn => (1.05, 0.95),
+    };
     let s_fled = !south_attacks && south_choice == 3;
     let n_fled = !north_attacks && north_choice == 3;
     let result = if s_fled && !n_fled {
         Outcome::North
     } else if n_fled && !s_fled {
         Outcome::South
-    } else if (s_share - n_share).abs() < 0.01 {
-        Outcome::Drawn
-    } else if s_share < n_share {
+    } else if edge >= south_at {
         Outcome::South
-    } else {
+    } else if edge < north_below {
         Outcome::North
+    } else {
+        Outcome::Drawn
     };
     Fought {
         battle: i,
@@ -247,6 +273,8 @@ pub fn north_plan(i: usize, last_south: Option<usize>, rng: &mut Rng) -> (Supply
         match last_south {
             Some(1) if rng.chance(0.6) => 1,
             Some(2) if rng.chance(0.6) => 2,
+            // now and then a general gives ground rather than risk his army
+            _ if rng.chance(0.1) => 3,
             _ => rng.range(0, 2) as usize,
         }
     };
@@ -455,7 +483,7 @@ impl CivilWar {
                 format!("${}", fmt_n(budget(b.north_men))),
             ),
             (
-                "Inflation",
+                if p.width < 27 { "Infl." } else { "Inflation" },
                 format!("{:.0}%", inflation(true, i)),
                 format!("{:.0}%", inflation(false, i)),
             ),
@@ -465,9 +493,11 @@ impl CivilWar {
             if yy < p.bottom() {
                 let style = if k == 0 { bold(st(DIM)) } else { st(INK) };
                 put(buf, p.x, yy, a, st(DIM));
+                // narrow panels draw the figures a little closer together
+                let (sx, nx) = if p.width < 27 { (6, 15) } else { (10, 19) };
                 put(
                     buf,
-                    p.x + 10,
+                    p.x + sx,
                     yy,
                     &format!("{s:>8}"),
                     if k == 0 {
@@ -478,7 +508,7 @@ impl CivilWar {
                 );
                 put(
                     buf,
-                    p.x + 19,
+                    p.x + nx,
                     yy,
                     &format!("{n:>8}"),
                     if k == 0 { bold(st(BLUE)) } else { style },
@@ -488,9 +518,9 @@ impl CivilWar {
         let yy = y + 5;
         if yy < p.bottom() {
             let role = match b.role {
-                Role::Attack => "The South is on the attack.",
-                Role::Defend => "The South is on the defence.",
-                Role::Both => "Both armies are on the attack.",
+                Role::Attack => "The South attacks.",
+                Role::Defend => "The South defends.",
+                Role::Both => "Both armies attack.",
             };
             put(buf, p.x, yy, role, bold(st(AMBER)));
         }
@@ -534,7 +564,8 @@ impl CivilWar {
                 );
                 for (k, f) in self.fields.iter().enumerate() {
                     let y = p.y + 2 + k as u16 * 2;
-                    f.draw(buf, p.x + 2, y, 14, 10, k == self.focus);
+                    let (lw, bw) = if p.width < 28 { (10, 9) } else { (14, 10) };
+                    f.draw(buf, p.x + 2, y, lw, bw, k == self.focus);
                     self.rows.push((Rect::new(p.x, y, p.width, 1), k));
                 }
                 let m = morale(&s, men, inflation(south, self.battle));
@@ -641,7 +672,7 @@ impl CivilWar {
                     buf,
                     p.x,
                     p.y + 3,
-                    "            South   North",
+                    "           South   North",
                     st(DIM),
                     p.width,
                 );
@@ -681,25 +712,29 @@ impl CivilWar {
                     st(DIM),
                     p.width,
                 );
-                let pct = f.south_lost as f64 / b.south_lost as f64 * 100.0;
+                let pct = |lost: u32, hist: u32| lost as f64 / hist.max(1) as f64 * 100.0;
                 put_max(
                     buf,
                     p.x,
                     p.y + 8,
-                    &format!("South lost {pct:.0}% of history's toll."),
+                    &format!(
+                        "% of hist{:>7} {:>7}",
+                        format!("{:.0}%", pct(f.south_lost, b.south_lost)),
+                        format!("{:.0}%", pct(f.north_lost, b.north_lost))
+                    ),
                     st(INK),
                     p.width,
                 );
                 let (msg, col) = match f.result {
-                    Outcome::South => ("The South holds the field.", GREEN),
-                    Outcome::North => ("The North holds the field.", RED),
-                    Outcome::Drawn => ("Neither side gives way: a draw.", AMBER),
+                    Outcome::South => ("South holds the field.", GREEN),
+                    Outcome::North => ("North holds the field.", RED),
+                    Outcome::Drawn => ("Drawn: no one gives way.", AMBER),
                 };
                 put_max(buf, p.x, p.y + 10, msg, bold(st(col)), p.width);
                 let hist = match b.result {
-                    Outcome::South => "In history, the South won.",
-                    Outcome::North => "In history, the North won.",
-                    Outcome::Drawn => "In history, neither side won.",
+                    Outcome::South => "History: the South won.",
+                    Outcome::North => "History: the North won.",
+                    Outcome::Drawn => "History: a draw.",
                 };
                 put_max(buf, p.x, p.y + 11, hist, st(DIM), p.width);
             }
@@ -709,7 +744,8 @@ impl CivilWar {
                 let lost: u32 = self.fought.iter().map(|f| f.south_lost).sum();
                 let hist: u32 = BATTLES.iter().map(|b| b.south_lost).sum();
                 let text = format!(
-                    "The war is refought. The South won {s} battles, the North {n}, and {d} were drawn; history gave the South six. Southern losses came to {} men against history's {}.\n\nEnter fights it again.",
+                    "The war is refought. The South won {s} {}, the North {n}, with {d} drawn; history gave the South six. Southern losses came to {} men against history's {}.\n\nEnter fights it again.",
+                    if s == 1 { "battle" } else { "battles" },
                     fmt_n(lost),
                     fmt_n(hist)
                 );
@@ -720,7 +756,20 @@ impl CivilWar {
 
     fn draw_campaign(&self, buf: &mut Buffer, r: Rect) {
         let p = panel(buf, r, "The war", CYAN);
-        put(buf, p.x, p.y, "battle           then now", st(DIM));
+        // a narrow window gets short names and closer columns
+        let narrow = p.width < 24;
+        let (name_w, then_x, now_x) = if narrow { (12, 13, 18) } else { (16, 17, 22) };
+        put(
+            buf,
+            p.x,
+            p.y,
+            if narrow {
+                "battle      then now"
+            } else {
+                "battle          then now"
+            },
+            st(DIM),
+        );
         for (i, b) in BATTLES.iter().enumerate() {
             let y = p.y + 1 + i as u16;
             if y >= p.bottom() {
@@ -732,19 +781,22 @@ impl CivilWar {
                 Outcome::Drawn => ("=", AMBER),
             };
             let current = i == self.battle && self.phase != Phase::WarOver;
-            let name: String = b.name.chars().take(17).collect();
+            let name: String = if narrow { short_name(b.name) } else { b.name }
+                .chars()
+                .take(name_w)
+                .collect();
             put(
                 buf,
                 p.x,
                 y,
-                &format!("{name:<17}"),
+                &format!("{name:<name_w$}"),
                 if current { bold(st(AMBER)) } else { st(INK) },
             );
             let (t, c) = mark(b.result);
-            put(buf, p.x + 18, y, t, st(c));
+            put(buf, p.x + then_x, y, t, st(c));
             if let Some(f) = self.fought.iter().find(|f| f.battle == i) {
                 let (t, c) = mark(f.result);
-                put(buf, p.x + 22, y, t, bold(st(c)));
+                put(buf, p.x + now_x, y, t, bold(st(c)));
             }
         }
         let (s, n) = self.tally();
@@ -756,6 +808,17 @@ impl CivilWar {
 }
 
 use ratatui::style::Color;
+
+/// A battle's name in twelve letters, for a narrow window.
+fn short_name(name: &str) -> &str {
+    match name {
+        "First Bull Run" => "1st Bull Run",
+        "Second Bull Run" => "2nd Bull Run",
+        "Fredericksburg" => "Fredericksbg",
+        "Chancellorsville" => "Chancellorsv",
+        n => n,
+    }
+}
 
 pub fn fmt_n(n: u32) -> String {
     let s = n.to_string();
@@ -950,11 +1013,15 @@ Enter goes on, Tab or Up/Down move, typing changes a number, 1-4 pick a plan.";
             _ => &[("Enter", "go on"), ("M", "sound"), ("Esc", "quit")],
         };
         let inner = frame(buf, area, "Civil War", &status, keys);
-        if too_small(buf, inner, 90, 24) {
+        if too_small(buf, inner, 80, 22) {
             return;
         }
-        let camp_w = 28;
-        let left_w = (inner.width - camp_w) * 45 / 100;
+        let camp_w = if inner.width < 90 { 24 } else { 28 };
+        let left_w = if inner.width < 90 {
+            (inner.width - camp_w) / 2
+        } else {
+            (inner.width - camp_w) * 45 / 100
+        };
         let left = Rect {
             width: left_w,
             ..inner

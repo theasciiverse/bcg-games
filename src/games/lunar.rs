@@ -122,12 +122,16 @@ impl Craft {
     /// the craft would stop and climb first.
     pub fn projection(&self) -> Option<f64> {
         let mut c = self.clone();
+        // a craft already climbing comes back down unless it keeps burning
+        let mut falling = c.speed >= 0.0;
         for _ in 0..4000 {
             c.step(0.5);
             if let Some(v) = c.landed {
                 return Some(v);
             }
-            if c.speed < 0.0 {
+            if c.speed >= 0.0 {
+                falling = true;
+            } else if falling {
                 return None;
             }
         }
@@ -334,8 +338,8 @@ impl Lunar {
             ("time".into(), format!("{:.0} s", c.t), INK),
             ("height".into(), format!("{miles:.0} mi {feet:.0} ft"), INK),
             (
-                "falling at".into(),
-                format!("{:.1} mph", c.mph()),
+                if c.mph() < 0.0 { "climbing at" } else { "falling at" }.into(),
+                format!("{:.1} mph", c.mph().abs()),
                 if c.mph() > 200.0 && c.altitude < 2.0 {
                     RED
                 } else {
@@ -387,6 +391,7 @@ impl Lunar {
         let y = p.y + 9;
         if y < p.bottom() && c.landed.is_none() {
             let txt = match c.projection() {
+                Some(v) if !v.is_finite() => "held like this: lost in space".into(),
                 Some(v) => format!("held like this: down at {v:.0} mph"),
                 None => "held like this: you'll climb".into(),
             };
@@ -465,7 +470,7 @@ seconds for orders, + and - change the speed of time, Enter starts again.";
             mode: Mode::Live,
             paused: false,
             waiting: false,
-            speedup: 8.0,
+            speedup: 4.0,
             log: Vec::new(),
             next_log: 0.0,
             record: Kv::load("lunar-descent", "record"),
@@ -560,8 +565,13 @@ seconds for orders, + and - change the speed of time, Enter starts again.";
                 return;
             }
         }
-        // slow time near the ground, so the last seconds can be flown
-        let near = (self.craft.altitude * FEET_PER_MILE / 2000.0).clamp(0.25, 1.0);
+        // time runs fast in the long fall and slows on the way down, to real
+        // time in the last half mile, so the landing itself can be flown
+        let near = if self.ctx.demo {
+            (self.craft.altitude * FEET_PER_MILE / 2000.0).clamp(0.25, 1.0)
+        } else {
+            (self.craft.altitude / 8.0).sqrt().clamp(0.25, 1.5)
+        };
         let step = dt as f64 * self.speedup * near;
         let until_log = (self.next_log - self.craft.t).max(0.0);
         let step = if self.mode == Mode::Turns {

@@ -24,8 +24,22 @@ the original as a black box.
   figures below (who attacked and who won as history records it).
 - Our own model: each side's losses are history's, scaled by a matchup
   table of strategies, the enemy's ammunition and the side's morale; poor
-  morale brings desertion; the side losing the smaller share of its army
-  carries the field; falling back always gives it up.
+  morale brings desertion; falling back always gives up the field.
+- Who carries the field (0.7.0): history's result stands unless one side
+  fought clearly better than history did. The South's edge is how much
+  lighter its losses (with deserters) ran against history's than the
+  North's did, measured against two evenly supplied armies with plans
+  that cancel out, so the South's inflation makes thrift harder without
+  losing every battle by itself. A battle the South won in history stays
+  its own at an edge of 0.9 and is drawn down to 0.8; one the North won
+  needs 1.25 for the South and 1.1 for a draw; a drawn one needs 1.05
+  either way. (0.6.0 gave the field to the side that lost the smaller
+  share of its army, which the South, outnumbered, almost never did:
+  Chancellorsville could not be won.)
+- Matchups (0.7.0): the artillery barrage is the safe defence, a little
+  better than even against everything; encirclement pays against troops
+  that dig in or fall back and costs dearly against guarded flanks. The
+  computer defender falls back now and then (one battle in ten).
 - The computer general spends evenly and leans against the South's last
   plan.
 - The screen: briefing, orders, and the whole war's table with history's

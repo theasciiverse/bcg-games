@@ -27,12 +27,16 @@ Written 2026-11-13 from the book's description (*BASIC Computer Games*,
 ## Our design (our own numbers where play only showed ranges)
 
 - Harvest: a whole number from 1 to 5 bushels an acre planted.
-- Rats: a 40% chance each year of losing 5% to 25% of the store.
+- Rats: a 30% chance each year of losing 10% to 25% of the store
+  (0.7.0: from 40% and 5% to 25%, so rat years are rarer but felt).
 - Newcomers, only in years with no starvation: (yield x (20 x acres +
   store) / people / 100) / 3 + 1 + a random 0 to 3.
 - Plague: 15% a year, halving the people.
-- Judgement: average starved > 33% or under 7 acres a person: hated;
-  > 10% or under 9: harsh; > 3% or under 10: fair; otherwise wise.
+- Judgement: average starved > 33% or under 6 acres a person: hated;
+  > 10% or under 8: harsh; > 3% or under 10: fair; otherwise wise. The
+  judgement says which of the two held it back (0.7.0: a reign that
+  starved no one but never bought land was cursed at 6.8 acres; the land
+  bars were 7 and 9).
 - The screen: a written yearly report, a bar chart of people, grain and
   land over the years, and the year's three orders with a live check of
   what they leave in store.

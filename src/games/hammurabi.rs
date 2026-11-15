@@ -161,8 +161,8 @@ impl City {
         y.yield_per_acre = rng.range(1, 5);
         y.harvest = y.yield_per_acre * o.plant;
         self.grain += y.harvest;
-        if rng.chance(0.4) {
-            y.rats = (self.grain as f32 * rng.between(0.05, 0.25)) as i64;
+        if rng.chance(0.3) {
+            y.rats = (self.grain as f32 * rng.between(0.1, 0.25)) as i64;
             self.grain -= y.rats;
         }
         // newcomers follow good harvests, wide fields and full stores
@@ -202,9 +202,9 @@ impl City {
     pub fn verdict(&self) -> Verdict {
         let p = self.average_starved_pct();
         let l = self.acres_per_person();
-        if p > 33.0 || l < 7.0 {
+        if p > 33.0 || l < 6.0 {
             Verdict::Tyrant
-        } else if p > 10.0 || l < 9.0 {
+        } else if p > 10.0 || l < 8.0 {
             Verdict::Harsh
         } else if p > 3.0 || l < 10.0 {
             Verdict::Fair
@@ -747,6 +747,17 @@ replaces it, Enter ends the year. F feeds everyone, P plants all you can.";
                 Verdict::Fair => "A fair reign, if not a great one. Some grumble, but most would have you back.".into(),
                 Verdict::Wise => "A golden age! The people sing your name; no ruler of Sumer has done better.".into(),
             };
+            // say what held the judgement back, so the next reign knows
+            let why = if matches!(v, Verdict::Tyrant | Verdict::Harsh | Verdict::Fair) {
+                if c.average_starved_pct() > 3.0 {
+                    " Too many went hungry under you."
+                } else {
+                    " Few went hungry, but the fields did not grow with the city: the people want 10 acres each."
+                }
+            } else {
+                ""
+            };
+            let text = format!("{text}{why}");
             let used = para(buf, p, &text, st(INK));
             let stats = [
                 format!("Starved on average  {:.1}% a year", c.average_starved_pct()),

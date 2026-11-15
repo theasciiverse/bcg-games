@@ -21,7 +21,10 @@ playing LUNAR as a black box under PC-BASIC.
   dry mass 16,000 lb plus 16,500 lb of fuel; exhaust speed 1.8 miles a
   second (a real descent engine's is about 1.9).
 - Two ways to fly: live, with time running at a chosen speed and the burn
-  changed at any moment, or turns, stopping every 10 seconds for orders as
+  changed at any moment (0.7.0: time runs at x4 by default, scaled by
+  the square root of the height over 8 miles, from 1.5 times that high
+  up to a quarter of it in the last half mile, which at x4 is real time;
+  0.6.0 ran x8 and slowed only in the last 2,000 ft), or turns, stopping every 10 seconds for orders as
   the original did.
 - Landing grades by touchdown speed: up to 1.2 mph perfect, 10 good, 22
   hard (crew fine, craft damaged), 60 wrecked, beyond that a crater.
