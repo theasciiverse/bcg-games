@@ -809,6 +809,16 @@ choice of game, Tab shows the rules.";
                 ("M", "sound"),
                 ("Esc", "quit"),
             ]
+        } else if self.hunt.variant != Variant::Depth {
+            &[
+                ("←↑↓→", "aim"),
+                ("Enter", "guess"),
+                ("H", "shade"),
+                ("V", "games"),
+                ("Tab", "rules"),
+                ("M", "sound"),
+                ("Esc", "back"),
+            ]
         } else {
             &[
                 ("←↑↓→", "aim"),
@@ -897,10 +907,9 @@ choice of game, Tab shows the rules.";
             }
         } else {
             let p = panel(buf, lower, "Clues", CYAN);
-            let rows = p.height as usize;
-            let skip = self.hunt.guesses.len().saturating_sub(rows);
-            for (i, g) in self.hunt.guesses.iter().enumerate().skip(skip) {
-                let y = p.y + (i - skip) as u16;
+            // a clue too long for the panel wraps under itself
+            let mut out: Vec<(String, bool)> = Vec::new();
+            for (i, g) in self.hunt.guesses.iter().enumerate() {
                 let at = if v == Variant::Depth {
                     format!("{},{},{}", g.at.x, g.at.y, g.at.z)
                 } else {
@@ -928,12 +937,34 @@ choice of game, Tab shows the rules.";
                         }
                     ),
                 };
+                let aw = if v == Variant::Depth { 5 } else { 3 };
+                let head = format!("{:>2}  {at:<aw$}  ", i + 1);
+                let room = (p.width as usize).saturating_sub(head.len()).max(8);
+                let mut line = String::new();
+                let mut first = true;
+                for word in clue.split(' ') {
+                    if !line.is_empty() && line.len() + 1 + word.len() > room {
+                        let lead = if first { head.clone() } else { " ".repeat(head.len()) };
+                        out.push((format!("{lead}{line}"), g.found > 0));
+                        line.clear();
+                        first = false;
+                    }
+                    if !line.is_empty() {
+                        line.push(' ');
+                    }
+                    line.push_str(word);
+                }
+                let lead = if first { head } else { " ".repeat(head.len()) };
+                out.push((format!("{lead}{line}"), g.found > 0));
+            }
+            let skip = out.len().saturating_sub(p.height as usize);
+            for (k, (text, found)) in out.iter().skip(skip).enumerate() {
                 put_max(
                     buf,
                     p.x,
-                    y,
-                    &format!("{:>2}  {at:<8} {clue}", i + 1),
-                    st(if g.found > 0 { GREEN } else { INK }),
+                    p.y + k as u16,
+                    text,
+                    st(if *found { GREEN } else { INK }),
                     p.width,
                 );
             }

@@ -51,8 +51,8 @@ pub const POSTS: [Post; 3] = [
         name: "Fort Frontenac",
         route: "along the lake to its eastern end",
         about: "The French fort where the lake empties into the St. Lawrence. Close and safe, but it pays the least.",
-        pays: 0.85,
-        goods: 55,
+        pays: 0.95,
+        goods: 50,
         path: &[CAMP, (0.38, 0.24), FRONTENAC],
     },
     Post {
@@ -67,8 +67,8 @@ pub const POSTS: [Post; 3] = [
         name: "Albany",
         route: "by Oswego, the Great Carrying Place and the Mohawk",
         about: "The English town on the Hudson. The best prices and the cheapest cloth, but the longest way, with a hard carry where pelts get wet.",
-        pays: 1.20,
-        goods: 40,
+        pays: 1.15,
+        goods: 45,
         path: &[CAMP, (0.36, 0.45), OSWEGO, CARRY, (0.80, 0.78), ALBANY],
     },
 ];
@@ -637,13 +637,20 @@ impl FurTrader {
         ];
         let pelts: i64 = t.pelts.iter().sum();
         if pelts > 0 {
-            let s: Vec<String> = FURS
-                .iter()
-                .zip(t.pelts.iter())
-                .map(|(f, n)| format!("{}{n}", &f[..2]))
-                .collect();
             lines.push((format!("Pelts      {pelts}"), GREEN));
-            lines.push((format!("           {}", s.join(" ")), GREEN));
+            // each kind by name, as many to a line as fit
+            let mut line = String::new();
+            for (f, n) in FURS.iter().zip(t.pelts.iter()) {
+                let item = format!("{} {n}", f.to_lowercase());
+                if !line.is_empty() && line.len() + 2 + item.len() > p.width as usize {
+                    lines.push((std::mem::take(&mut line), GREEN));
+                }
+                if !line.is_empty() {
+                    line.push_str("  ");
+                }
+                line.push_str(&item);
+            }
+            lines.push((line, GREEN));
         } else {
             lines.push(("Pelts      none".into(), DIM));
         }

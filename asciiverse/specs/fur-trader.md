@@ -31,7 +31,7 @@ the 1700s, for eight seasons. Money is in livres.
 - **Autumn, outfitting:** buy bales of trade goods (cloth, kettles,
   knives, beads) and hire 2 to 12 voyageurs at 25 livres each for the
   season. Each voyageur carries 3 bales. The price of a bale is set by the
-  post you last sold at: 55 at Fort Frontenac, 50 at Montreal, 40 at
+  post you last sold at: 50 at Fort Frontenac and Montreal, 45 at
   Albany (Montreal for the first season).
 - **Winter, trading:** you winter in the upper country and trade your
   goods with Indigenous trappers and traders (Anishinaabe, Odawa, Wendat
@@ -40,12 +40,12 @@ the 1700s, for eight seasons. Money is in livres.
   The pelts divide about half beaver, a fifth marten, an eighth fox, a
   tenth otter and the rest mink.
 - **Spring, selling:** choose one of three posts:
-  - **Fort Frontenac**, along the lake to its eastern end: pays 85% of the
+  - **Fort Frontenac**, along the lake to its eastern end: pays 95% of the
     base prices; no risk of its own.
   - **Montreal**, down the St. Lawrence and its rapids: pays 110%; 30%
     chance a canoe takes water and 10% to 30% of the pelts are lost.
   - **Albany**, by Oswego, the Great Carrying Place and the Mohawk River
-    to the Hudson: pays 120% and sells the cheapest goods; 20% chance a
+    to the Hudson: pays 115% and sells the cheapest goods; 20% chance a
     Mohawk guide shows a drier path, otherwise 30% chance rain on the
     carry spoils 15% to 30% of the pelts; 25% chance a rival trader got
     there first and prices are 15% lower.
@@ -56,6 +56,10 @@ the 1700s, for eight seasons. Money is in livres.
   mink 3, times the post's rate and a 0.9 to 1.1 swing for each kind.
   Beaver also follows the market in Europe, 0.8 to 1.25, announced when
   it is high or low.
+- (0.7.0: Fort Frontenac paid 85% with goods at 55, which left almost
+  nothing after wages, and Albany 120% with goods at 40, which made it
+  the only sensible choice. Now Frontenac is a small, safe profit and
+  the two far posts are close to even.)
 - **The end:** after eight seasons, or earlier when the purse cannot pay a
   crew of two and a bale. The score is the fortune; the best is kept.
 

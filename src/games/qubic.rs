@@ -575,10 +575,12 @@ game, N starts again, Tab shows the rules.";
             inner.right().saturating_sub(rx + 1),
             inner.height - 2,
         );
+        // the record needs eight rows; the game's notes get the rest
+        let game_h = right.height.saturating_sub(8).max(8).min(right.height);
         let p = panel(
             buf,
             Rect {
-                height: 8.min(right.height),
+                height: game_h,
                 ..right
             },
             "The game",
@@ -623,8 +625,8 @@ game, N starts again, Tab shows the rules.";
         );
 
         let lower = Rect {
-            y: right.y + 8,
-            height: right.height.saturating_sub(8),
+            y: right.y + game_h,
+            height: right.height.saturating_sub(game_h),
             ..right
         };
         if self.show_help {
@@ -668,7 +670,7 @@ game, N starts again, Tab shows the rules.";
                     buf,
                     p.x,
                     y + 1,
-                    "L or a click: its strength",
+                    "L or a click: strength",
                     st(DIM),
                     p.width,
                 );
