@@ -56,10 +56,10 @@ impl Shot {
 
     pub fn base(self) -> f32 {
         match self {
-            Shot::Long => 0.34,
-            Shot::Short => 0.46,
-            Shot::Layup => 0.58,
-            Shot::Set => 0.42,
+            Shot::Long => 0.36,
+            Shot::Short => 0.49,
+            Shot::Layup => 0.60,
+            Shot::Set => 0.45,
             Shot::Pass => 0.0,
         }
     }
@@ -873,7 +873,11 @@ Esc quits.";
         let by = inner.y + 1 + court_h;
         let left = Rect::new(inner.x, by, 34, bottom_h);
         let right = Rect::new(inner.x + 34, by, inner.width - 34, bottom_h);
-        let title = if self.ball == Side::Us {
+        let title = if matches!(self.phase, Phase::Over) {
+            "Full time"
+        } else if matches!(self.phase, Phase::Break) {
+            "The break"
+        } else if self.ball == Side::Us {
             "Your ball: call it"
         } else {
             "Their ball: defend"
@@ -909,7 +913,8 @@ Esc quits.";
                     buf,
                     p,
                     &format!(
-                        "Final whistle. Enter for a new game.\n\nSeason: {won} won, {lost} lost\nBiggest win: {best} points"
+                        "Final whistle. Enter for a new game.\n\nSeason: {won} won, {lost} lost{}",
+                        if best > 0 { format!("\nBiggest win: {best} points") } else { String::new() }
                     ),
                     st(INK),
                 );

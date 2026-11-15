@@ -158,32 +158,47 @@ impl Splat {
         log::info!("landed {:?}", self.phase);
     }
 
-    /// How this good jump ranks against the earlier good ones.
+    /// How this good jump ranks against the earlier good ones: the lower
+    /// the chute opened, the better.
     fn verdict(&self, h: f64) -> String {
-        let earlier: Vec<f64> = self.history.iter().copied().filter(|&x| x != h).collect();
-        if earlier.is_empty() {
-            return "Your first good jump! Every one after this one is measured against it.".into();
-        }
-        let lower = earlier.iter().filter(|&&x| x < h).count();
-        let pct = 100.0 * (earlier.len() - lower) as f64 / earlier.len() as f64;
-        let n = earlier.len() + 1;
-        if lower == 0 {
-            format!("The latest opening of all {n} good jumps. Superb nerve!")
-        } else if pct >= 75.0 {
-            format!(
-                "Later than {pct:.0}% of your {} earlier good jumps. Splendid.",
-                earlier.len()
-            )
-        } else if pct >= 50.0 {
-            format!("Better than half your earlier jumps ({pct:.0}%). Good.")
-        } else if pct >= 25.0 {
-            format!("Only {pct:.0}% of your earlier jumps opened higher. A bit timid.")
-        } else {
-            format!(
-                "Nearly every earlier jump opened lower ({:.0}%). Were you nervous?",
-                100.0 - pct
-            )
-        }
+        verdict(&self.history, h)
+    }
+}
+
+fn ordinal(n: usize) -> String {
+    let suffix = match (n % 10, n % 100) {
+        (_, 11..=13) => "th",
+        (1, _) => "st",
+        (2, _) => "nd",
+        (3, _) => "rd",
+        _ => "th",
+    };
+    format!("{n}{suffix}")
+}
+
+/// Ranks a good jump that opened at `h` feet among `all` good jumps,
+/// itself included.
+fn verdict(all: &[f64], h: f64) -> String {
+    let mut all = all.to_vec();
+    if !all.contains(&h) {
+        all.push(h);
+    }
+    let n = all.len();
+    if n == 1 {
+        return "Your first good jump! Every one after it is ranked against it.".into();
+    }
+    // 1 is the lowest opening; ties go to the new jump
+    let rank = all.iter().filter(|&&x| x < h).count() + 1;
+    if rank == 1 {
+        format!("The lowest of all {n} good jumps. Superb nerve!")
+    } else if rank == n {
+        format!("The highest of your {n} good jumps. Plenty of sky to spare.")
+    } else if rank * 4 <= n {
+        format!("Your {} lowest of {n} good jumps. Splendid.", ordinal(rank))
+    } else if rank * 2 <= n {
+        format!("Your {} lowest of {n}, lower than most. Good.", ordinal(rank))
+    } else {
+        format!("Your {} lowest of {n}. Most of your jumps went lower.", ordinal(rank))
     }
 }
 
@@ -541,7 +556,10 @@ Type the seconds (a point for tenths) and press Enter to jump.";
                 buf,
                 rp.x,
                 y,
-                &format!("{} good jumps so far", self.history.len()),
+                &match self.history.len() {
+                    1 => "1 good jump so far".to_string(),
+                    n => format!("{n} good jumps so far"),
+                },
                 st(DIM),
             );
         }
@@ -551,6 +569,17 @@ Type the seconds (a point for tenths) and press Enter to jump.";
 #[cfg(test)]
 mod tests {
     use super::*;
+
+    #[test]
+    fn ranking_words() {
+        assert!(verdict(&[], 50.0).contains("first"));
+        assert!(verdict(&[300.0, 50.0], 50.0).contains("lowest of all 2"));
+        assert!(verdict(&[300.0, 50.0], 300.0).contains("highest of your 2"));
+        let all = [10.0, 20.0, 30.0, 40.0, 50.0, 60.0, 70.0, 80.0];
+        assert!(verdict(&all, 20.0).contains("Your 2nd lowest of 8 good jumps. Splendid"));
+        assert!(verdict(&all, 40.0).contains("4th lowest of 8, lower than most"));
+        assert!(verdict(&all, 60.0).contains("Most of your jumps went lower"));
+    }
 
     #[test]
     fn fall_matches_the_formulas() {

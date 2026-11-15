@@ -61,9 +61,11 @@ helped up or out by the team.
   percent more for each try after the first, and earns 18 plus 2 a point
   of bravery; a miss earns 2 for the try. Three tries at most; then the
   steers.
-- The ovation is the score: under 25 polite silence, to 49 warm
-  applause, to 79 a lap of the ring, to 109 flowers and hats, from 110
-  carried out on shoulders. A bull of bravery 4 or 5 is applauded on his
+- The ovation is the score: under 30 polite silence, to 59 warm
+  applause, to 94 a lap of the ring, to 134 flowers and hats, from 135
+  carried out on shoulders. (0.7.0: the bars were 25, 50, 80 and 110,
+  and a clean afternoon that simply alternated daring passes with
+  flourishes was carried out three times in five.) A bull of bravery 4 or 5 is applauded on his
   way out.
 - Kept in the state folder: afternoons fought, the best ovation, times
   carried out.

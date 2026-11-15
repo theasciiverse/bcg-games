@@ -174,19 +174,19 @@ pub fn pega_chance(bull: &Bull, team: u8) -> f32 {
 
 pub fn ovation(score: f32) -> (&'static str, &'static str) {
     match score as i32 {
-        i32::MIN..=24 => (
+        i32::MIN..=29 => (
             "Polite silence",
             "The plaza is quiet. There will be other afternoons.",
         ),
-        25..=49 => (
+        30..=59 => (
             "Warm applause",
             "Steady applause sees you to the barrier.",
         ),
-        50..=79 => (
+        60..=94 => (
             "A lap of the ring",
             "The crowd calls you out, and you walk a lap of the ring to their applause.",
         ),
-        80..=109 => (
+        95..=134 => (
             "Flowers and hats",
             "Flowers and hats rain onto the sand as you walk the ring twice.",
         ),
@@ -230,9 +230,9 @@ const CROWD_FAIR: [&str; 4] = [
     "The crowd waits for more.",
 ];
 const CROWD_CLOSE: [&str; 3] = [
-    "A horn brushes the sequins. Gasps, then a roar.",
+    "A horn brushes the sequins. Then a roar.",
     "Too close! The crowd is on its feet.",
-    "He passes so near the plaza holds its breath.",
+    "So near that the plaza holds its breath.",
 ];
 
 pub struct Bullfight {
@@ -434,7 +434,7 @@ impl Bullfight {
                 self.score += a;
                 self.cheer = (a / 14.0).min(1.0);
                 self.crowd = if self.repeats >= 2 {
-                    "The crowd has seen that one. They want something new.".to_string()
+                    "Seen that one. The crowd wants more.".to_string()
                 } else if a >= 9.0 {
                     pick(&mut self.ctx.rng, &CROWD_GOOD).to_string()
                 } else {
@@ -481,7 +481,7 @@ impl Bullfight {
     fn after_toss(&mut self) {
         if self.tosses >= 2 {
             self.note =
-                "Your team helps you to the infirmary to rest. The steers come for the bull."
+                "Your team helps you out of the ring to rest. The steers come for the bull."
                     .into();
             self.score = self.score * 0.6 + 6.0;
             self.lead_out_quiet();
@@ -490,7 +490,7 @@ impl Bullfight {
             self.cheer = 1.0;
             self.note =
                 "You are up again, shaking the sand off. The crowd roars for your nerve.".into();
-            self.crowd = "Applause for courage rolls round the plaza.".into();
+            self.crowd = "Applause for your courage, all round.".into();
             self.phase = Phase::Choose;
             self.ctx.audio.play(Sound::Good);
         }
@@ -548,7 +548,7 @@ impl Bullfight {
         self.stats.set("fights", n);
         let best = self.stats.get::<f32>("best").unwrap_or(0.0).max(self.score);
         self.stats.set("best", best.round());
-        if self.score >= 110.0 {
+        if self.score >= 135.0 {
             let s = self.stats.get::<u32>("shoulders").unwrap_or(0) + 1;
             self.stats.set("shoulders", s);
         }
@@ -1058,10 +1058,10 @@ impl Bullfight {
         }
         // the crowd's voice along the bottom of the stands
         let y = p.bottom() - 1;
-        let w = self.crowd.chars().count() as u16;
+        let w = (self.crowd.chars().count() as u16).min(p.width.saturating_sub(2));
         let x = p.x + p.width.saturating_sub(w + 2) / 2;
         fill(buf, Rect::new(x, y, (w + 2).min(p.width), 1), st(INK));
-        put_max(buf, x + 1, y, &self.crowd, bold(st(AMBER)), p.width);
+        put_max(buf, x + 1, y, &self.crowd, bold(st(AMBER)), w);
     }
 
     fn draw_side(&self, buf: &mut Buffer, r: Rect) {
@@ -1297,8 +1297,8 @@ mod tests {
     #[test]
     fn ovations_rise_with_the_score() {
         assert_eq!(ovation(5.0).0, "Polite silence");
-        assert_eq!(ovation(50.0).0, "A lap of the ring");
-        assert_eq!(ovation(120.0).0, "Out on shoulders");
+        assert_eq!(ovation(70.0).0, "A lap of the ring");
+        assert_eq!(ovation(140.0).0, "Out on shoulders");
     }
 
     #[test]

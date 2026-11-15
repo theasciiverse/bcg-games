@@ -23,4 +23,7 @@ the original as a black box.
   values differ from those told by up to 5%.
 - Fall: accelerate at g up to terminal velocity, then fall at it.
 - Ranking against earlier good jumps by the height the chute opened at,
-  kept in the state folder.
+  kept in the state folder: the lowest of all, the highest of all, in the
+  lowest quarter, the lower half, or the upper half, named by its place
+  ("your 3rd lowest of 9"). (0.7.0: the words were percentages that read
+  backwards with only one earlier jump.)

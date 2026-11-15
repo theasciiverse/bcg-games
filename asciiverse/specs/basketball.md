@@ -23,8 +23,8 @@ Source: obsessivegamingchronology.blogspot.com/2024/07/prehistory-viii-more-basi
   alive by an offensive rebound, 10 to 20; working the ball around, 6 to
   12). A shot as the clock runs out still counts.
 - With the ball you call a play, without it a defence:
-  - Long jump shot (3 points, 34%), short jump shot (2, 46%), drive for a
-    layup (2, 58%), set shot (2, 42%), or work it around: no shot, a
+  - Long jump shot (3 points, 36%), short jump shot (2, 49%), drive for a
+    layup (2, 60%), set shot (2, 45%), or work it around: no shot, a
     chance of a steal, and the next shot gets 10% more.
   - Full-court press (steals 14%, fouls 14%, layups +6%, other shots -2%),
     man-to-man (steals 7%, fouls 11%, jump shots -7%, set shots -3%,
@@ -35,7 +35,8 @@ Source: obsessivegamingchronology.blogspot.com/2024/07/prehistory-viii-more-basi
   around, 130% plus 3%), then a shooting foul (the defence's foul rate:
   as many free throws as the shot was worth, each 70%), then the shot.
   A miss is kept alive by the offence 28% of the time; otherwise the
-  ball changes hands.
+  ball changes hands. (0.7.0: every shot 2 or 3 points better than in
+  0.6.0, whose games ended in the low forties.)
 - The computer leans against your last call: against the press it
   drives, against a zone it shoots from outside; on defence it plays
   man-to-man after jump shots, a zone after layups and presses passers;

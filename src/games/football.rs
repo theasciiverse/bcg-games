@@ -832,14 +832,16 @@ impl Football {
         let ezl = Rect::new(r.x, r.y, ez, r.height);
         let ezr = Rect::new(r.right() - ez, r.y, ez, r.height);
         for (z, name) in [(ezl, TEAMS[0]), (ezr, TEAMS[1])] {
-            for (i, ch) in name
-                .chars()
-                .filter(|c| *c != ' ')
-                .take(r.height as usize)
-                .enumerate()
-            {
-                let bg = buf[(z.x + 1, z.y + i as u16)].bg;
-                buf[(z.x + 1, z.y + i as u16)]
+            // the whole name down the end zone if it fits, else its first word
+            let mut letters: String = name.chars().filter(|c| *c != ' ').collect();
+            if letters.chars().count() > r.height as usize {
+                letters = name.split(' ').next().unwrap_or(name).to_string();
+            }
+            let top = (r.height as usize).saturating_sub(letters.chars().count()) as u16 / 2;
+            for (i, ch) in letters.chars().take(r.height as usize).enumerate() {
+                let i = i as u16 + top;
+                let bg = buf[(z.x + 1, z.y + i)].bg;
+                buf[(z.x + 1, z.y + i)]
                     .set_symbol(&ch.to_uppercase().to_string())
                     .set_style(on(mix(INK, bg, 0.4), bg));
             }
@@ -1120,7 +1122,11 @@ Esc quits.";
         let lw = 38;
         let leftp = Rect::new(inner.x, by, lw, bottom_h);
         let rightp = Rect::new(inner.x + lw, by, inner.width - lw, bottom_h);
-        let title = if self.ball == Side::Us {
+        let title = if matches!(self.phase, Phase::Over) {
+            "Full time"
+        } else if matches!(self.phase, Phase::Break) {
+            "Halftime"
+        } else if self.ball == Side::Us {
             "Your ball: call a play"
         } else {
             "Their ball: call a defence"
@@ -1148,7 +1154,8 @@ Esc quits.";
                 para(
                     buf,
                     p,
-                    &format!("Final gun. Enter for a new game.\n\nRecord: {won} won, {lost} lost, {tied} tied\nBiggest win: {best} points"),
+                    &format!("Final gun. Enter for a new game.\n\nRecord: {won} won, {lost} lost, {tied} tied{}",
+                        if best > 0 { format!("\nBiggest win: {best} points") } else { String::new() }),
                     st(INK),
                 );
             }
