@@ -578,7 +578,14 @@ Up/Down change them, Enter fires.";
             "Bursts",
             CYAN,
         );
-        put(buf, l.x, l.y, "hr  angle  dist   missed by", st(DIM));
+        // a narrow panel packs the columns closer
+        let narrow = l.width < 27;
+        let head = if narrow {
+            "hr angle dist  missed"
+        } else {
+            "hr  angle  dist   missed by"
+        };
+        put(buf, l.x, l.y, head, st(DIM));
         for (i, sh) in self.shots.iter().enumerate() {
             let y = l.y + 1 + i as u16;
             if y < l.bottom() {
@@ -593,13 +600,17 @@ Up/Down change them, Enter fires.";
                     buf,
                     l.x,
                     y,
-                    &format!(
-                        "{:>2}  {:>5.0}  {:>4.0}   {:>6.0} mi",
-                        sh.hour,
-                        sh.angle,
-                        sh.dist,
-                        sh.miss * 100.0
-                    ),
+                    &if narrow {
+                        format!(
+                            "{:>2} {:>5.0} {:>4.0} {:>5.0}mi",
+                            sh.hour, sh.angle, sh.dist, sh.miss * 100.0
+                        )
+                    } else {
+                        format!(
+                            "{:>2}  {:>5.0}  {:>4.0}   {:>6.0} mi",
+                            sh.hour, sh.angle, sh.dist, sh.miss * 100.0
+                        )
+                    },
                     st(c),
                 );
             }

@@ -234,9 +234,7 @@ pub fn fight(
     let n_fled = !north_attacks && north_choice == 3;
     let result = if s_fled && !n_fled {
         Outcome::North
-    } else if n_fled && !s_fled {
-        Outcome::South
-    } else if edge >= south_at {
+    } else if (n_fled && !s_fled) || edge >= south_at {
         Outcome::South
     } else if edge < north_below {
         Outcome::North

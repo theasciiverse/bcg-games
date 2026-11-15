@@ -9,9 +9,11 @@ own title in the Asciiverse catalog (`collection = "bcg-games"`).
 - **Second release, 0.6.0 (2026-11-14):** Basketball, Football, Boxing,
   Bullfight, Golf, Acey Ducey, King, Fur Trader, 3-D Tic-Tac-Toe, and
   Hide and Seek (Hurkle, Mugwump and Depth Charge in one program).
+- **Tuning pass, 0.7.0 (2026-11-15):** balance, wording and 80x24
+  layout across the set, from scripted and hand play in tmux.
 
-**Status:** all eighteen playable, tested, with demos. Not yet played
-through by a person.
+**Status:** all eighteen playable, tested, with demos, tuned once from
+play in the terminal. Not yet played through by David.
 
 ## The rule that matters most: clean room
 

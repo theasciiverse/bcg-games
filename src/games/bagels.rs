@@ -100,7 +100,7 @@ impl Bagels {
         self.history.clear();
         self.typed.clear();
         self.phase = Phase::Guessing;
-        self.note = "Three different digits. What's your first guess?".into();
+        self.note = "Three different digits. Your first guess?".into();
         log::info!("new secret dealt");
     }
 
@@ -112,7 +112,7 @@ impl Bagels {
         }
         let g = [self.typed[0], self.typed[1], self.typed[2]];
         if !distinct(&g) {
-            self.note = "No digit twice: the secret never repeats one.".into();
+            self.note = "No digit twice: the secret has none.".into();
             self.ctx.audio.play(Sound::Nope);
             return;
         }

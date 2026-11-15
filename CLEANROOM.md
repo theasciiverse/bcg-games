@@ -82,8 +82,16 @@ Charge as one program, Hide and Seek. They were made more strictly still:
   Ducey is the card game's old name; the hurkle (from Theodore Sturgeon's
   story) and the mugwump are the creatures PCC's games hid.
 
+## The tuning pass (0.7.0, 2026-11-15)
+
+Balance and wording were changed from playing our own games in a
+terminal and from our own specs only. No listing, port, README of the
+programs or page showing their code was opened, fetched or searched for;
+no number was taken from the originals. Each change is written into the
+game's spec first, with the 0.6.0 value beside it.
+
 Done by Claude (Anthropic's model) working for David Sandquist,
-2026-11-13 and 2026-11-14. The legal line followed: a new and
+2026-11-13 to 2026-11-15. The legal line followed: a new and
 independent work made in free association with another is its maker's own (Swedish copyright act,
 1960:729, 4 § second paragraph); a translation of a program into another
 language would not be (17 U.S.C. § 103, URL 4 § first paragraph).
